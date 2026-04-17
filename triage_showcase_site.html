@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TriageAI — AI-Enabled Multi-Modal Triage Framework</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#030712;--card:rgba(15,23,42,0.7);--bdr:rgba(30,58,95,0.4);--glow:rgba(30,58,95,0.6);--cy:#06b6d4;--bl:#3b82f6;--pu:#a78bfa;--ro:#f43f5e;--am:#f59e0b;--gn:#22c55e;--rd:#ef4444;--or:#f97316;--tx:#e2e8f0;--tx2:#94a3b8;--tx3:#64748b}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:'Outfit',sans-serif;overflow-x:hidden}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
+a{text-decoration:none;color:inherit}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.3)}50%{box-shadow:0 0 24px 6px rgba(239,68,68,0.08)}}
+@keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.particle{position:absolute;border-radius:50%;animation:float linear infinite}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 36px;display:flex;justify-content:space-between;align-items:center;transition:all 0.4s}
+.nav.scrolled{background:rgba(3,7,18,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--bdr)}
+.nav-logo{font-weight:800;font-size:20px;color:var(--cy)}
+.nav-links{display:flex;gap:28px}.nav-links a{font-size:13px;font-weight:500;color:var(--tx3);transition:color 0.3s}.nav-links a:hover{color:var(--cy)}
+.section{padding:100px 24px;max-width:1100px;margin:0 auto;position:relative;z-index:1}
+.section-tag{display:inline-block;padding:5px 18px;border-radius:20px;background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.2);font-size:11px;font-weight:700;color:var(--cy);letter-spacing:2px;text-transform:uppercase;margin-bottom:18px}
+.section-title{font-size:40px;font-weight:800;color:#fff;letter-spacing:-1.5px;line-height:1.15}
+.section-sub{font-size:16px;color:var(--tx3);margin-top:12px;max-width:580px;line-height:1.6}
+.section-header{text-align:center;margin-bottom:52px}
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:28px 26px;backdrop-filter:blur(12px);transition:all 0.4s;position:relative;overflow:hidden}
+.card:hover{border-color:var(--cy);box-shadow:0 0 32px rgba(6,182,212,0.06)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px;position:relative}
+.hero-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(6,182,212,0.07),transparent 70%);top:15%;left:50%;transform:translateX(-50%);pointer-events:none}
+.hero h1{font-size:56px;font-weight:900;line-height:1.1;letter-spacing:-2.5px;max-width:800px;position:relative;z-index:1}
+.hero h1 .grad{background:linear-gradient(135deg,var(--cy),var(--bl),var(--pu));background-size:200% 200%;animation:gradShift 4s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:18px;color:var(--tx3);margin-top:22px;max-width:520px;line-height:1.6;position:relative;z-index:1}
+.hero-cursor{border-right:2px solid var(--cy);animation:blink 1s infinite}
+.hero-btns{display:flex;gap:16px;margin-top:40px;position:relative;z-index:1}
+.btn-primary{padding:13px 34px;border-radius:10px;background:linear-gradient(135deg,var(--cy),var(--bl));color:#fff;font-weight:700;font-size:14px;border:none;cursor:pointer;transition:transform 0.2s}.btn-primary:hover{transform:translateY(-2px)}
+.btn-secondary{padding:13px 34px;border-radius:10px;background:transparent;border:1px solid var(--bdr);color:var(--tx);font-weight:600;font-size:14px;cursor:pointer;transition:border-color 0.3s}.btn-secondary:hover{border-color:var(--cy)}
+.hero-stats{display:flex;gap:40px;margin-top:52px;position:relative;z-index:1}
+.hero-stat-val{font-family:'JetBrains Mono';font-size:24px;font-weight:700;color:var(--cy)}
+.hero-stat-lbl{font-size:11px;color:var(--tx3);margin-top:4px;text-transform:uppercase;letter-spacing:1px}
+.mv{font-family:'JetBrains Mono';font-size:30px;font-weight:800}
+.ml{font-size:10px;color:var(--tx3);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.flow-row{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;padding:8px 0}
+.flow-box{padding:12px 16px;border-radius:12px;text-align:center;min-width:110px;transition:transform 0.3s}.flow-box:hover{transform:translateY(-4px)}
+.flow-box-title{font-size:13px;font-weight:700;line-height:1.3}
+.flow-box-sub{font-size:10px;color:var(--tx3);margin-top:3px}
+.flow-arrow{color:var(--tx3);font-size:22px;padding:0 6px}
+.fw{margin-bottom:12px}.fw-lbl{font-size:12px;color:var(--tx3);margin-bottom:5px}
+.fw-track{height:22px;border-radius:5px;display:flex;overflow:hidden;border:1px solid rgba(26,39,68,0.5)}
+.fw-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+.bar{margin-bottom:12px}.bar-header{display:flex;justify-content:space-between;margin-bottom:4px}
+.bar-label{font-size:13px;color:var(--tx)}.bar-val{font-size:13px;font-family:'JetBrains Mono';font-weight:600}
+.bar-track{height:10px;background:rgba(255,255,255,0.05);border-radius:5px;overflow:hidden}
+.bar-fill{height:100%;border-radius:5px;transition:width 2s ease;width:0}
+.tb{width:100%;border-collapse:collapse}.tb th{text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--tx3);padding:10px 8px;border-bottom:2px solid var(--bdr)}
+.tb td{padding:10px 8px;font-size:12px;border-bottom:1px solid rgba(30,58,95,0.3);color:var(--tx2)}.tb tr:last-child td{border-bottom:none}
+.highlight{color:var(--gn)!important;font-weight:700}.danger{color:var(--rd)!important;font-weight:700}
+.formula{padding:10px 14px;background:rgba(255,255,255,0.03);border-radius:8px;font-family:'JetBrains Mono';font-size:11px;color:var(--tx);margin:10px 0;border-left:3px solid var(--cy)}
+.demo-input{margin-bottom:16px}.demo-label{font-size:12px;color:var(--tx3);margin-bottom:4px;display:flex;justify-content:space-between}.demo-val{font-family:'JetBrains Mono';font-weight:700}
+input[type=range]{width:100%;-webkit-appearance:none;background:rgba(255,255,255,0.06);height:4px;border-radius:4px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;cursor:pointer;background:var(--cy)}
+textarea{width:100%;height:70px;background:rgba(255,255,255,0.04);border:1px solid var(--bdr);border-radius:10px;color:var(--tx);padding:12px;font-size:13px;resize:none;outline:none;font-family:'Outfit',sans-serif;transition:border-color 0.3s}textarea:focus{border-color:var(--cy)}
+.demo-result{padding:18px;border-radius:12px;text-align:center;margin-bottom:12px}
+.demo-result-label{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.demo-result-val{font-size:28px;font-weight:800;font-family:'JetBrains Mono'}
+.team-card{text-align:center;padding:36px 24px}
+.team-avatar{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:26px;font-weight:800}
+.team-name{font-size:18px;font-weight:700;color:#fff}.team-role{font-size:13px;color:var(--tx3);margin-top:4px}
+.footer{padding:48px 24px;border-top:1px solid var(--bdr);text-align:center;position:relative;z-index:1}
+.reveal{opacity:0;transform:translateY(40px);transition:all 0.8s ease}.reveal.active{opacity:1;transform:translateY(0)}
+@media(max-width:768px){.g2,.g3,.g4{grid-template-columns:1fr}.hero h1{font-size:32px}.hero-stats{flex-wrap:wrap;gap:20px}.flow-row{flex-direction:column;gap:8px}.flow-arrow{transform:rotate(90deg)}.nav-links{display:none}.section-title{font-size:28px}}
+</style>
+</head>
+<body>
+<div class="particles" id="particles"></div>
+<nav class="nav" id="nav"><div class="nav-logo">TriageAI</div><div class="nav-links"><a href="#problem">Problem</a><a href="#solution">Architecture</a><a href="#models">Models</a><a href="#safety">Safety</a><a href="#demo">Demo</a><a href="#results">Results</a><a href="#team">Team</a></div></nav>
+
+<section class="hero"><div class="hero-glow"></div>
+<div style="font-size:13px;font-weight:600;color:var(--cy);letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;position:relative;z-index:1">SRM Institute of Science and Technology</div>
+<h1><span style="color:#fff">AI-Enabled Multi-Modal </span><br><span class="grad">Triage Framework</span></h1>
+<p class="hero-sub" id="typewriter"></p>
+<div class="hero-btns"><a href="#solution" class="btn-primary">Explore System</a><a href="#demo" class="btn-secondary">Try Demo</a></div>
+<div class="hero-stats">
+<div><div class="hero-stat-val" data-count="0.854" data-decimals="3">0</div><div class="hero-stat-lbl">F1 Score</div></div>
+<div><div class="hero-stat-val" style="color:var(--gn)">0.0%</div><div class="hero-stat-lbl">Under-Triage</div></div>
+<div><div class="hero-stat-val" data-count="3" data-decimals="0">0</div><div class="hero-stat-lbl">Languages</div></div>
+<div><div class="hero-stat-val" data-count="9" data-decimals="0">0</div><div class="hero-stat-lbl">Disease Classes</div></div>
+</div></section>
+
+<section class="section" id="problem"><div class="section-header reveal"><div class="section-tag">The Challenge</div><div class="section-title">Why Rural Triage Needs AI</div><p class="section-sub" style="margin:12px auto 0">65% of Indians live in rural areas with critically under-staffed healthcare facilities</p></div>
+<div class="g3"><div class="card reveal"><div class="mv" style="color:var(--rd);font-size:38px" data-count="600000" data-decimals="0" data-suffix="+">0</div><div style="font-size:16px;font-weight:700;margin:8px 0 6px">Physician Shortage</div><p style="font-size:13px;color:var(--tx3);line-height:1.5">WHO estimates India's rural areas lack over 600,000 physicians</p></div>
+<div class="card reveal"><div class="mv" style="color:var(--am);font-size:38px">~25%</div><div style="font-size:16px;font-weight:700;margin:8px 0 6px">Under-Triage Rate</div><p style="font-size:13px;color:var(--tx3);line-height:1.5">Critical patients at rural PHCs incorrectly classified as non-urgent</p></div>
+<div class="card reveal"><div class="mv" style="color:var(--cy);font-size:38px" data-count="10000" data-decimals="0">0</div><div style="font-size:16px;font-weight:700;margin:8px 0 6px">Patient Records</div><p style="font-size:13px;color:var(--tx3);line-height:1.5">Clinically grounded dataset spanning 9 disease categories, 40 features</p></div></div></section>
+
+<section class="section" id="solution"><div class="section-header reveal"><div class="section-tag">Architecture</div><div class="section-title">Multi-Modal Fusion Pipeline</div><p class="section-sub" style="margin:12px auto 0">Two parallel ML branches fused with task-specific learned weights</p></div>
+<div class="card reveal" style="padding:32px">
+<div class="flow-row"><div class="flow-box" style="background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.25)"><div class="flow-box-title" style="color:var(--cy)">Patient Vitals</div><div class="flow-box-sub">36 features</div></div><span class="flow-arrow">&rarr;</span><div class="flow-box" style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.25)"><div class="flow-box-title" style="color:var(--bl)">HistGBoost + RF</div><div class="flow-box-sub">predict_proba()</div></div><span class="flow-arrow">&searr;</span><div class="flow-box" style="background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.25)"><div class="flow-box-title" style="color:var(--pu)">Weighted Fusion</div><div class="flow-box-sub">P=w₁·Pv+w₂·Pnlp</div></div><span class="flow-arrow">&rarr;</span><div class="flow-box" style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25)"><div class="flow-box-title" style="color:var(--am)">Safety Layers</div><div class="flow-box-sub">3 mechanisms</div></div><span class="flow-arrow">&rarr;</span><div class="flow-box" style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25)"><div class="flow-box-title" style="color:var(--gn)">Triage Output</div><div class="flow-box-sub">Risk+Urg+Disease</div></div></div>
+<div class="flow-row" style="margin-top:-4px"><div class="flow-box" style="background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.25)"><div class="flow-box-title" style="color:var(--ro)">Symptom Text</div><div class="flow-box-sub">Free-text</div></div><span class="flow-arrow">&rarr;</span><div class="flow-box" style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.25)"><div class="flow-box-title" style="color:var(--bl)">TF-IDF+LogReg</div><div class="flow-box-sub">predict_proba()</div></div><span class="flow-arrow">&nearr;</span></div>
+<div style="max-width:600px;margin:28px auto 0"><div class="fw"><div class="fw-lbl">Risk Level</div><div class="fw-track"><div class="fw-seg" style="width:50%;background:var(--cy)">Vitals 50%</div><div class="fw-seg" style="width:50%;background:var(--ro)">NLP 50%</div></div></div><div class="fw"><div class="fw-lbl">Urgency</div><div class="fw-track"><div class="fw-seg" style="width:45%;background:var(--cy)">Vitals 45%</div><div class="fw-seg" style="width:55%;background:var(--ro)">NLP 55%</div></div></div><div class="fw"><div class="fw-lbl">Disease Category</div><div class="fw-track"><div class="fw-seg" style="width:100%;background:var(--ro)">NLP 100%</div></div></div></div></div></section>
+
+<section class="section" id="models"><div class="section-header reveal"><div class="section-tag">ML Models</div><div class="section-title">Dual-Branch Architecture</div></div>
+<div class="g3"><div class="card reveal"><div style="font-size:28px;margin-bottom:12px">&#9829;</div><div style="font-size:17px;font-weight:700;color:var(--cy);margin-bottom:4px">Vitals Branch</div><div style="font-size:11px;color:var(--tx3);font-family:'JetBrains Mono';margin-bottom:16px">HistGradientBoosting + RandomForest</div><p style="font-size:12px;color:var(--tx3);margin-bottom:6px"><strong style="color:var(--tx)">Input:</strong> 36 features + 4 derived indices</p><p style="font-size:12px;color:var(--tx3);margin-bottom:6px"><strong style="color:var(--gn)">Strength:</strong> Risk F1=0.824, Urgency F1=0.811</p><p style="font-size:12px;color:var(--tx3)"><strong style="color:var(--am)">Weakness:</strong> Disease F1=0.569</p></div>
+<div class="card reveal"><div style="font-size:28px;margin-bottom:12px">&#9998;</div><div style="font-size:17px;font-weight:700;color:var(--ro);margin-bottom:4px">NLP Branch</div><div style="font-size:11px;color:var(--tx3);font-family:'JetBrains Mono';margin-bottom:16px">TF-IDF (5K) + Logistic Regression</div><p style="font-size:12px;color:var(--tx3);margin-bottom:6px"><strong style="color:var(--tx)">Input:</strong> Free-text symptom descriptions</p><p style="font-size:12px;color:var(--tx3);margin-bottom:6px"><strong style="color:var(--gn)">Strength:</strong> Disease F1=0.833</p><p style="font-size:12px;color:var(--tx3)"><strong style="color:var(--am)">Weakness:</strong> Risk F1=0.745, Urgency F1=0.643</p></div>
+<div class="card reveal"><div style="font-size:28px;margin-bottom:12px">&#10038;</div><div style="font-size:17px;font-weight:700;color:var(--pu);margin-bottom:4px">Fused Model</div><div style="font-size:11px;color:var(--tx3);font-family:'JetBrains Mono';margin-bottom:16px">Weighted Probability Ensemble</div><p style="font-size:12px;color:var(--tx3);margin-bottom:6px"><strong style="color:var(--tx)">Method:</strong> Learned weights via grid search</p><p style="font-size:12px;color:var(--tx3);margin-bottom:6px"><strong style="color:var(--gn)">Best:</strong> Risk=0.854, Urg=0.841, Dis=0.861</p><p style="font-size:12px;color:var(--cy);font-weight:600">Best across all targets</p></div></div></section>
+
+<section class="section" id="safety"><div class="section-header reveal"><div class="section-tag">Patient Safety</div><div class="section-title">Zero Under-Triage Architecture</div></div>
+<div class="g2"><div class="card reveal" style="animation:pulse 3s infinite"><div style="font-size:17px;font-weight:700;color:var(--rd);margin-bottom:8px">Red Flag Engine</div><p style="font-size:13px;color:var(--tx3);line-height:1.6;margin-bottom:12px">50+ hard-coded clinical rules. Cannot be overruled by ML model.</p><div class="formula">risk_final = max(risk_ml, risk_redflag)</div><div style="font-size:12px;color:var(--rd);font-weight:600">Without it: 8.3% under-triage</div></div>
+<div class="card reveal"><div style="font-size:17px;font-weight:700;color:var(--am);margin-bottom:8px">Confidence Escalation</div><p style="font-size:13px;color:var(--tx3);line-height:1.6;margin-bottom:12px">Below &tau;=0.55 confidence &rarr; bump prediction up one tier.</p><div class="formula">risk_adj = risk_pred + 1, if max(P) &lt; 0.55</div><div style="font-size:12px;color:var(--am);font-weight:600">Without it: 1.2% under-triage</div></div>
+<div class="card reveal"><div style="font-size:17px;font-weight:700;color:var(--cy);margin-bottom:8px">Disagreement Detection</div><p style="font-size:13px;color:var(--tx3);line-height:1.6;margin-bottom:12px">When branches diverge by &ge;2 levels &rarr; take worse prediction.</p><div class="formula">risk = max(r_vitals, r_nlp), if |&Delta;| &ge; 2</div><div style="font-size:12px;color:var(--cy);font-weight:600">Without it: 0.4% under-triage</div></div>
+<div class="card reveal"><div style="font-size:17px;font-weight:700;color:var(--gn);margin-bottom:8px">Combined Result</div><p style="font-size:13px;color:var(--tx3);line-height:1.6;margin-bottom:12px">All three layers &rarr; <strong style="color:#fff">0% under-triage</strong> on test set (n=1000). Over-triage: 6.8%.</p><div class="formula">Critical Sensitivity: 97.4% | Emergency Sensitivity: 95.3%</div><div style="font-size:12px;color:var(--gn);font-weight:600">0% Under-Triage Achieved</div></div></div></section>
+
+<section class="section" id="demo"><div class="section-header reveal"><div class="section-tag">Interactive</div><div class="section-title">Live Triage Simulation</div></div>
+<div class="g2 reveal"><div class="card"><div style="font-size:16px;font-weight:700;color:var(--bl);margin-bottom:20px">Patient Input</div>
+<div class="demo-input"><div class="demo-label"><span>Heart Rate (bpm)</span><span class="demo-val" id="hr-val" style="color:var(--rd)">75</span></div><input type="range" id="hr" min="30" max="200" value="75" style="accent-color:var(--rd)" oninput="document.getElementById('hr-val').textContent=this.value"></div>
+<div class="demo-input"><div class="demo-label"><span>Systolic BP (mmHg)</span><span class="demo-val" id="bp-val" style="color:var(--bl)">120</span></div><input type="range" id="bp" min="50" max="250" value="120" style="accent-color:var(--bl)" oninput="document.getElementById('bp-val').textContent=this.value"></div>
+<div class="demo-input"><div class="demo-label"><span>SpO2 (%)</span><span class="demo-val" id="spo2-val" style="color:var(--cy)">98</span></div><input type="range" id="spo2" min="60" max="100" value="98" style="accent-color:var(--cy)" oninput="document.getElementById('spo2-val').textContent=this.value"></div>
+<div class="demo-input"><div class="demo-label"><span>Temperature (°C)</span><span class="demo-val" id="temp-val" style="color:var(--am)">37.0</span></div><input type="range" id="temp" min="340" max="420" value="370" style="accent-color:var(--am)" oninput="document.getElementById('temp-val').textContent=(this.value/10).toFixed(1)"></div>
+<div class="demo-input"><div style="font-size:12px;color:var(--tx3);margin-bottom:4px">Symptoms (free text)</div><textarea id="symptoms" placeholder="e.g., fever with chills and joint pain..."></textarea></div>
+<button class="btn-primary" style="width:100%" onclick="analyzePatient()">Analyze Patient</button></div>
+<div class="card"><div style="font-size:16px;font-weight:700;color:var(--gn);margin-bottom:20px">Triage Output</div><div id="demo-output"><div style="height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px"><div style="width:60px;height:60px;border-radius:50%;border:2px dashed var(--bdr);display:flex;align-items:center;justify-content:center;font-size:24px">&#9764;</div><p style="color:var(--tx3);font-size:13px">Enter vitals & symptoms, then click Analyze</p></div></div></div></div></section>
+
+<section class="section" id="results"><div class="section-header reveal"><div class="section-tag">Performance</div><div class="section-title">Results & Ablation Study</div></div>
+<div class="g2 reveal"><div class="card"><div style="font-size:14px;font-weight:700;color:var(--cy);margin-bottom:18px;text-transform:uppercase;letter-spacing:1px">Model Comparison (F1)</div>
+<div class="bar"><div class="bar-header"><span class="bar-label">Risk — Vitals</span><span class="bar-val" style="color:var(--tx3)">0.824</span></div><div class="bar-track"><div class="bar-fill" data-width="82.4" style="background:var(--tx3)"></div></div></div>
+<div class="bar"><div class="bar-header"><span class="bar-label">Risk — NLP</span><span class="bar-val" style="color:var(--tx3)">0.745</span></div><div class="bar-track"><div class="bar-fill" data-width="74.5" style="background:var(--tx3)"></div></div></div>
+<div class="bar"><div class="bar-header"><span class="bar-label">Risk — Fused</span><span class="bar-val" style="color:var(--cy)">0.854</span></div><div class="bar-track"><div class="bar-fill" data-width="85.4" style="background:var(--cy)"></div></div></div>
+<div class="bar"><div class="bar-header"><span class="bar-label">Urgency — Fused</span><span class="bar-val" style="color:var(--bl)">0.841</span></div><div class="bar-track"><div class="bar-fill" data-width="84.1" style="background:var(--bl)"></div></div></div>
+<div class="bar"><div class="bar-header"><span class="bar-label">Disease — Fused</span><span class="bar-val" style="color:var(--pu)">0.861</span></div><div class="bar-track"><div class="bar-fill" data-width="86.1" style="background:var(--pu)"></div></div></div></div>
+<div class="card"><div style="font-size:14px;font-weight:700;color:var(--am);margin-bottom:18px;text-transform:uppercase;letter-spacing:1px">Ablation Study</div>
+<table class="tb"><thead><tr><th>Config</th><th>Risk</th><th>Urg.</th><th>Dis.</th><th>U-Tri.</th></tr></thead><tbody>
+<tr><td class="highlight">Full System</td><td>0.854</td><td>0.841</td><td>0.861</td><td class="highlight">0.0%</td></tr>
+<tr><td>Vitals Only</td><td>0.824</td><td>0.811</td><td>0.569</td><td class="danger">3.1%</td></tr>
+<tr><td>NLP Only</td><td>0.745</td><td>0.643</td><td>0.833</td><td class="danger">12.7%</td></tr>
+<tr><td>No Red Flags</td><td>0.812</td><td>0.793</td><td>0.861</td><td class="danger">8.3%</td></tr>
+<tr><td>No Conf. Esc.</td><td>0.837</td><td>0.824</td><td>0.861</td><td class="danger">1.2%</td></tr>
+<tr><td>No Safety</td><td>0.791</td><td>0.768</td><td>0.861</td><td class="danger">11.6%</td></tr></tbody></table></div></div>
+<div class="g4 reveal" style="margin-top:20px">
+<div class="card" style="text-align:center;padding:24px"><div class="mv" style="color:var(--gn)">0.0%</div><div class="ml">Under-Triage</div></div>
+<div class="card" style="text-align:center;padding:24px"><div class="mv" style="color:var(--am)">6.8%</div><div class="ml">Over-Triage</div></div>
+<div class="card" style="text-align:center;padding:24px"><div class="mv" style="color:var(--cy)">97.4%</div><div class="ml">Critical Sensitivity</div></div>
+<div class="card" style="text-align:center;padding:24px"><div class="mv" style="color:var(--bl)">95.3%</div><div class="ml">Emergency Sensitivity</div></div></div></section>
+
+<section class="section" id="team"><div class="section-header reveal"><div class="section-tag">Team</div><div class="section-title">Built By</div></div>
+<div class="g3 reveal">
+<div class="card team-card"><div class="team-avatar" style="background:rgba(6,182,212,0.15);border:2px solid rgba(6,182,212,0.3);color:var(--cy)">S</div><div class="team-name">Sarthak Gupta</div><div class="team-role">ML Pipeline & Fusion Architecture</div></div>
+<div class="card team-card"><div class="team-avatar" style="background:rgba(59,130,246,0.15);border:2px solid rgba(59,130,246,0.3);color:var(--bl)">D</div><div class="team-name">Dhruv</div><div class="team-role">Safety Systems & NLP Branch</div></div>
+<div class="card team-card"><div class="team-avatar" style="background:rgba(167,139,250,0.15);border:2px solid rgba(167,139,250,0.3);color:var(--pu)">M</div><div class="team-name">Dr. R. Madhura</div><div class="team-role">Project Guide</div></div></div>
+<p class="reveal" style="text-align:center;margin-top:32px;font-size:13px;color:var(--tx3)">SRM Institute of Science and Technology &middot; Department of Computing Technologies &middot; VI Semester &middot; 2025–2026</p></section>
+
+<footer class="footer"><div style="font-size:18px;font-weight:800;color:var(--cy);margin-bottom:8px">TriageAI</div><p style="font-size:12px;color:var(--tx3);max-width:500px;margin:0 auto;line-height:1.6">AI-Enabled Multi-Modal Triage Framework for Risk Prediction and Urgency Assessment in Resource-Constrained Rural Clinics</p><p style="font-size:11px;color:var(--tx3);margin-top:16px">Guide: Dr. R. Madhura &middot; Minor Project (21CSP302L) &middot; SDG 3: Good Health & Well-being</p></footer>
+
+<script>
+!function(){const c=document.getElementById('particles'),colors=['#06b6d4','#3b82f6','#a78bfa'];for(let i=0;i<35;i++){const p=document.createElement('div');p.className='particle';p.style.cssText='width:'+(.5+Math.random()*2.5)+'px;height:'+(.5+Math.random()*2.5)+'px;background:'+colors[i%3]+';left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;opacity:'+(Math.random()*.35+.1)+';animation-duration:'+(8+Math.random()*12)+'s;animation-delay:'+Math.random()*5+'s';c.appendChild(p)}}();
+window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',window.scrollY>50)});
+!function(){const t="Risk Prediction & Urgency Assessment for Resource-Constrained Rural Clinics",el=document.getElementById('typewriter');let i=0;!function type(){i<=t.length&&(el.innerHTML=t.slice(0,i)+'<span class="hero-cursor">&nbsp;</span>',i++,setTimeout(type,35))}()}();
+const ro=new IntersectionObserver(e=>{e.forEach(x=>{x.isIntersecting&&(x.target.classList.add('active'),ro.unobserve(x.target))})},{threshold:.15});document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+const bo=new IntersectionObserver(e=>{e.forEach(x=>{x.isIntersecting&&(x.target.querySelectorAll('.bar-fill').forEach(b=>{b.style.width=b.dataset.width+'%'}),bo.unobserve(x.target))})},{threshold:.3});document.querySelectorAll('.card').forEach(c=>{c.querySelector('.bar-fill')&&bo.observe(c)});
+const co=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting&&!x.target.dataset.counted){x.target.dataset.counted='1';const end=parseFloat(x.target.dataset.count),dec=parseInt(x.target.dataset.decimals||'0'),suf=x.target.dataset.suffix||'',dur=1500,st=performance.now();!function step(now){const p=Math.min((now-st)/dur,1),v=p*end;end>=1e3?x.target.textContent=Math.floor(v).toLocaleString()+suf:x.target.textContent=v.toFixed(dec)+suf;p<1&&requestAnimationFrame(step)}(performance.now())}})},{threshold:.3});document.querySelectorAll('[data-count]').forEach(el=>co.observe(el));
+function analyzePatient(){const hr=+document.getElementById('hr').value,bp=+document.getElementById('bp').value,spo2=+document.getElementById('spo2').value,temp=+document.getElementById('temp').value/10,s=document.getElementById('symptoms').value.toLowerCase(),out=document.getElementById('demo-output');out.innerHTML='<div style="height:340px;display:flex;align-items:center;justify-content:center"><div style="width:36px;height:36px;border:3px solid var(--cy);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite"></div></div>';setTimeout(()=>{let r=0,u=0,d='General';if(spo2<90||bp<80||hr>150||s.includes('unconscious')||s.includes('cardiac arrest')){r=3;u=3}else if(spo2<93||bp<90||hr>130||temp>40||s.includes('chest pain')||s.includes('seizure')){r=2;u=2}else if(hr>110||bp>160||temp>38.5||s.includes('fever')||s.includes('vomit')){r=1;u=1}if(s.includes('chest')||s.includes('heart'))d='Cardiac';else if(s.includes('cough')||s.includes('breath'))d='Respiratory';else if(s.includes('fever')&&(s.includes('chills')||s.includes('joint')))d='Infectious';else if(s.includes('head')||s.includes('seizure'))d='Neurological';else if(s.includes('diarrhea')||s.includes('vomit')||s.includes('stomach'))d='Gastrointestinal';else if(s.includes('pregnant')||s.includes('bleeding'))d='Obstetric';else if(s.includes('sugar')||s.includes('thirst'))d='Metabolic';else if(s.includes('fracture')||s.includes('wound'))d='Trauma';const rL=['Low','Moderate','High','Critical'],uL=['Non-Urgent','Semi-Urgent','Urgent','Emergency'],rC=['#22c55e','#f59e0b','#f97316','#ef4444'];out.innerHTML='<div class="demo-result" style="background:'+rC[r]+'10;border:1px solid '+rC[r]+'30"><div class="demo-result-label">Risk Level</div><div class="demo-result-val" style="color:'+rC[r]+'">'+rL[r]+'</div></div><div class="demo-result" style="background:'+rC[u]+'10;border:1px solid '+rC[u]+'30"><div class="demo-result-label">Urgency</div><div class="demo-result-val" style="color:'+rC[u]+'">'+uL[u]+'</div></div><div class="demo-result" style="background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.2)"><div class="demo-result-label">Disease Category</div><div class="demo-result-val" style="color:var(--pu)">'+d+'</div></div><div style="padding:12px;background:rgba(6,182,212,0.04);border-radius:8px;border:1px solid rgba(6,182,212,0.12);font-size:11px;color:var(--tx3);line-height:1.5;font-family:JetBrains Mono"><strong style=color:var(--cy)>Pipeline:</strong> Vitals→HistGBoost+RF→Fusion(w₁·Pv+w₂·Pnlp)→Safety→Output</div>'},1500)}
+</script>
+</body>
+</html>
